@@ -12,12 +12,13 @@ public class WhackAMole {
     private static final int BOARD_HEIGHT = 450;
     private static final int BOARD_SIZE = 3;
     private static final int TILE_SIZE = 70;
-    private static final int INITIAL_DELAY = 1000;
+    private static final int INITIAL_DELAY = 700;
     private final JButton[] board = new JButton[BOARD_SIZE * BOARD_SIZE];
     private final Random random = new Random();
     private final Timer setMoleTimer;
     private final Timer setPlantTimer;
     private final JLabel textLabel;
+    private boolean gameInProgress = true;
     private int score;
     private int currentDelay = INITIAL_DELAY;
     private JButton currentMoleTile;
@@ -67,17 +68,20 @@ public class WhackAMole {
             tile.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    JButton title = (JButton) e.getSource();
-                    if (title == currentMoleTile) {
-                        score += 10;
-                        textLabel.setText("Score: " + score);
-                    } else if (title == currentPlantTile) {
-                        setMoleTimer.stop();
-                        setPlantTimer.stop();
-                        textLabel.setText("Game Over: " + score);
+                  if(gameInProgress){
+                      JButton title = (JButton) e.getSource();
+                      if (title == currentMoleTile) {
+                          gameInProgress=true;
+                          score += 10;
+                          textLabel.setText("Score: " + score);
+                      } else if (title == currentPlantTile) {
+                          setMoleTimer.stop();
+                          setPlantTimer.stop();
+                          textLabel.setText("Game Over: " + score);
+                          gameInProgress = false;
 
-
-                    }
+                      }
+                  }
                 }
             });
         }
