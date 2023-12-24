@@ -12,13 +12,16 @@ public class WhackAMole {
     private static final int BOARD_HEIGHT = 450;
     private static final int BOARD_SIZE = 3;
     private static final int TILE_SIZE = 70;
+    private static final int INITIAL_DELAY = 1000;
     private final JButton[] board = new JButton[BOARD_SIZE * BOARD_SIZE];
     private final Random random = new Random();
-    Timer setMoleTimer;
+    private final JButton incrementBtn = new JButton("+500ms");
+    private final JButton decrementBtn = new JButton("-500ms");
+    private final Timer setMoleTimer;
+    private final Timer setPlantTimer;
+    private int currentDelay = INITIAL_DELAY;
     private JButton currentMoleTile;
     private JButton currentPlantTile;
-    private Timer setPlantTimer;
-
 
     public WhackAMole() {
         JFrame frame = new JFrame("Whack A Mole - Mario Edition");
@@ -59,7 +62,7 @@ public class WhackAMole {
             boardPanel.add(tile);
         }
 
-        Timer setMoleTimer = new Timer(800, new ActionListener() {
+        setMoleTimer = new Timer(INITIAL_DELAY, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (currentMoleTile != null) {
                     currentMoleTile.setIcon(null);
@@ -76,34 +79,81 @@ public class WhackAMole {
             }
         });
 
+        setPlantTimer = new Timer(INITIAL_DELAY, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (currentPlantTile != null) {
+                    currentPlantTile.setIcon(null);
+                    currentPlantTile = null;
+                }
 
-        Timer setPlantTimer = new Timer(800, new ActionListener() {
-    public void actionPerformed(ActionEvent e) {
-        if (currentPlantTile != null) {
-            currentPlantTile.setIcon(null);
-            currentPlantTile = null;
-        }
+                int num;
+                do {
+                    num = random.nextInt(board.length);
+                } while (currentMoleTile == board[num]);
 
-        int num;
-        do {
-            num = random.nextInt(board.length);
-        } while (currentMoleTile == board[num]);
+                currentPlantTile = board[num];
+                currentPlantTile.setIcon(plantIcon);
+            }
+        });
 
-        currentPlantTile = board[num];
-        currentPlantTile.setIcon(plantIcon);
-    }
-});
+        incrementBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                currentDelay = Math.max(500, currentDelay - 500);
+                updateTimersDelay();
+            }
+        });
+
+        decrementBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                currentDelay += 500;
+                updateTimersDelay();
+            }
+        });
+
+        styledBtn(incrementBtn);
+        styledBtn(decrementBtn);
+        textPanel.add(incrementBtn, BorderLayout.WEST);
+        textPanel.add(decrementBtn, BorderLayout.EAST);
 
         setPlantTimer.start();
         setMoleTimer.start();
         frame.setVisible(true);
     }
 
-    private static JButton getTile(ImageIcon plantIcon) {
+    private void updateTimersDelay() {
+        setMoleTimer.setDelay(currentDelay);
+        setPlantTimer.setDelay(currentDelay);
+    }
+
+    private void styledBtn(JButton button , int topPadding) {
+        button.setBackground(new Color(255, 255, 255));
+        button.setFocusable(false);
+        button.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+
+        button.setBorder(BorderFactory.createEmptyBorder(topPadding, 0, 0, 0));
+
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(new Color(211, 211, 211));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(new Color(255, 255, 255));
+            }
+        });
+    }
+
+
+
+    private JButton getTile(ImageIcon plantIcon) {
         JButton tile = new JButton();
+
         tile.setBackground(new Color(255, 255, 255));
         tile.setFocusable(false);
-//        tile.setIcon(plantIcon);
         tile.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -123,4 +173,6 @@ public class WhackAMole {
         });
         return tile;
     }
+
+
 }
