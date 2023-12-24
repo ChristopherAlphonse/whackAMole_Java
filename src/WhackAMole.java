@@ -1,11 +1,18 @@
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.Objects;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 public class WhackAMole {
     private static final int BOARD_WIDTH = 400;
@@ -13,18 +20,21 @@ public class WhackAMole {
     private static final int BOARD_SIZE = 3;
     private static final int TILE_SIZE = 70;
     private static final int INITIAL_DELAY = 700;
+    private static final Logger logger = Logger.getLogger(WhackAMole.class.getName());
     private final JButton[] board = new JButton[BOARD_SIZE * BOARD_SIZE];
     private final Random random = new Random();
     private final Timer setMoleTimer;
     private final Timer setPlantTimer;
     private final JLabel textLabel;
-//    private final boolean gameInProgress = true;
+    //    private final boolean gameInProgress = true;
     private int score;
     private int currentDelay = INITIAL_DELAY;
     private JButton currentMoleTile;
     private JButton currentPlantTile;
 
     public WhackAMole() {
+
+
         JFrame frame = new JFrame("Whack A Mole - Mario Edition");
 
         ImageIcon image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/assetsFiles/icon.png")));
@@ -66,40 +76,48 @@ public class WhackAMole {
             boardPanel.add(tile);
 
             tile.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-               
-                      JButton title = (JButton) e.getSource();
-                      if (title == currentMoleTile) {
-                         
-                        //   gameInProgress=true;
-                          score += 10;
-                          textLabel.setText("Score: " + score);
-                          
-                      } else if (title == currentPlantTile) {
-                          setMoleTimer.stop();
-                          setPlantTimer.stop();
-                          textLabel.setText("Game Over: " + score);
-// gameInProgress = false;
-            disableBoard();                         
+                                       @Override
+                                       public void actionPerformed(ActionEvent e) {
 
-                      }
-                  
-                }
+                                           JButton title = (JButton) e.getSource();
+                                           if (title == currentMoleTile) {
+                                               playWinFile();
+                                               score += 10;
+                                               textLabel.setText("Score: " + score);
 
-                private void disableBoard() {
-                    for(JButton tile: board){
-                        tile.setEnabled(false);
-                    }
-                }
-            }
-            
-            
+                                           } else if (title == currentPlantTile) {
+                                               playLoseFile();
+                                               setMoleTimer.stop();
+                                               setPlantTimer.stop();
+                                               textLabel.setText("Game Over: " + score);
+                                               disableBoard();
+
+                                           }
+
+                                       }
+
+
+                                       private void playWinFile() {
+
+                                           playFile("C:/Users/chris/Desktop/Github/JavaGame/src/assetsFiles/audio/win.wav");
+                                       }
+
+                                       private void playLoseFile() {
+
+                                           playFile("C:/Users/chris/Desktop/Github/JavaGame/src/assetsFiles/audio/lose.wav");
+                                       }
+
+                                       private void disableBoard() {
+                                           for (JButton tile : board) {
+                                               tile.setEnabled(false);
+                                           }
+                                       }
+                                   }
+
+
             );
 
 
-
-            
         }
 
         setMoleTimer = new Timer(INITIAL_DELAY, e -> {
@@ -132,15 +150,15 @@ public class WhackAMole {
             currentPlantTile.setIcon(plantIcon);
         });
 
-        JButton incrementBtn = new JButton("+500ms");
+        JButton incrementBtn = new JButton("+300ms");
         incrementBtn.addActionListener(e -> {
-            currentDelay = Math.max(500, currentDelay - 500);
+            currentDelay = Math.max(300, currentDelay - 300);
             updateTimersDelay();
         });
 
-        JButton decrementBtn = new JButton("-500ms");
+        JButton decrementBtn = new JButton("-300ms");
         decrementBtn.addActionListener(e -> {
-            currentDelay += 500;
+            currentDelay += 300;
             updateTimersDelay();
         });
 
@@ -157,6 +175,22 @@ public class WhackAMole {
         setMoleTimer.start();
 
         frame.setVisible(true);
+    }
+
+
+    private void playFile(String fileName) {
+        try {
+//
+            File audioFile = new File(fileName).getAbsoluteFile();
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
+//
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+//
+            clip.start();
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error playing sound", ex);
+        }
     }
 
     private JButton getRestartBtn() {
@@ -179,7 +213,7 @@ public class WhackAMole {
                 enableBoard();
                 setPlantTimer.start();
                 setMoleTimer.start();
-                
+
             }
 
             // private void resetTiles() {
@@ -187,7 +221,7 @@ public class WhackAMole {
             // }
 
             private void enableBoard() {
-                for(JButton tile : board){
+                for (JButton tile : board) {
                     tile.setEnabled(true);
                     tile.setIcon(null);
                 }
@@ -210,12 +244,12 @@ public class WhackAMole {
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                button.setBackground(new Color(211, 211, 211));
+                button.setBackground(new Color(114, 114, 114));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                button.setBackground(new Color(255, 255, 255));
+                button.setBackground(new Color(255, 255, 255, 255));
             }
         });
     }
@@ -225,7 +259,7 @@ public class WhackAMole {
 
         tile.setBackground(new Color(255, 255, 255));
         tile.setFocusable(false);
-       
+
         tile.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
