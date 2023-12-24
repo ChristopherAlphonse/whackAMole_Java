@@ -79,6 +79,9 @@ public class WhackAMole {
                           setPlantTimer.stop();
                           textLabel.setText("Game Over: " + score);
                           gameInProgress = false;
+                          for(int i=0; i<board.length; i++){
+                            board[i].setEnabled(gameInProgress);
+                          }
 
                       }
                   }
@@ -161,7 +164,7 @@ public class WhackAMole {
 
                 setPlantTimer.start();
                 setMoleTimer.start();
-                //
+                
             }
         }));
         return restartBtn;
@@ -196,9 +199,7 @@ public class WhackAMole {
 
         tile.setBackground(new Color(255, 255, 255));
         tile.setFocusable(false);
-        tile.addActionListener(e -> {
-            // Do something if needed
-        });
+       
         tile.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
