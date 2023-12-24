@@ -13,9 +13,12 @@ public class WhackAMole {
     private static final int BOARD_SIZE = 3;
     private static final int TILE_SIZE = 70;
     private final JButton[] board = new JButton[BOARD_SIZE * BOARD_SIZE];
-    private JButton currentMoleTile;
-    private Timer setPlantTimer;
     private final Random random = new Random();
+    Timer setMoleTimer;
+    private JButton currentMoleTile;
+    private JButton currentPlantTile;
+    private Timer setPlantTimer;
+
 
     public WhackAMole() {
         JFrame frame = new JFrame("Whack A Mole - Mario Edition");
@@ -56,19 +59,42 @@ public class WhackAMole {
             boardPanel.add(tile);
         }
 
-        Timer setMoleTimer = new Timer(500, new ActionListener() {
+        Timer setMoleTimer = new Timer(800, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (currentMoleTile != null) {
                     currentMoleTile.setIcon(null);
                     currentMoleTile = null;
                 }
 
-                int num = random.nextInt(board.length);
+                int num;
+                do {
+                    num = random.nextInt(board.length);
+                } while (currentPlantTile == board[num]);
+
                 currentMoleTile = board[num];
                 currentMoleTile.setIcon(moleIcon);
             }
         });
 
+
+        Timer setPlantTimer = new Timer(800, new ActionListener() {
+    public void actionPerformed(ActionEvent e) {
+        if (currentPlantTile != null) {
+            currentPlantTile.setIcon(null);
+            currentPlantTile = null;
+        }
+
+        int num;
+        do {
+            num = random.nextInt(board.length);
+        } while (currentMoleTile == board[num]);
+
+        currentPlantTile = board[num];
+        currentPlantTile.setIcon(plantIcon);
+    }
+});
+
+        setPlantTimer.start();
         setMoleTimer.start();
         frame.setVisible(true);
     }
@@ -77,7 +103,7 @@ public class WhackAMole {
         JButton tile = new JButton();
         tile.setBackground(new Color(255, 255, 255));
         tile.setFocusable(false);
-        tile.setIcon(plantIcon);
+//        tile.setIcon(plantIcon);
         tile.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
