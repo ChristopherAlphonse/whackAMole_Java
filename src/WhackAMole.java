@@ -68,25 +68,38 @@ public class WhackAMole {
             tile.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                  if(gameInProgress){
+               
                       JButton title = (JButton) e.getSource();
                       if (title == currentMoleTile) {
-                          gameInProgress=true;
+                         
+                        //   gameInProgress=true;
                           score += 10;
                           textLabel.setText("Score: " + score);
+                          
                       } else if (title == currentPlantTile) {
                           setMoleTimer.stop();
                           setPlantTimer.stop();
                           textLabel.setText("Game Over: " + score);
-                          gameInProgress = false;
-                          for(int i=0; i<board.length; i++){
-                            board[i].setEnabled(gameInProgress);
-                          }
+ gameInProgress = false;
+            disableBoard();                         
 
                       }
-                  }
+                  
                 }
-            });
+
+                private void disableBoard() {
+                    for(JButton tile: board){
+                        tile.setEnabled(false);
+                    }
+                }
+            }
+            
+            
+            );
+
+
+
+            
         }
 
         setMoleTimer = new Timer(INITIAL_DELAY, e -> {
@@ -162,9 +175,22 @@ public class WhackAMole {
                 score = 0;
                 textLabel.setText("Score: " + score);
 
+// resetTiles();
+                enableBoard();
                 setPlantTimer.start();
                 setMoleTimer.start();
                 
+            }
+
+            // private void resetTiles() {
+            //     for(JButton title)
+            // }
+
+            private void enableBoard() {
+                for(JButton tile : board){
+                    tile.setEnabled(true);
+                    tile.setIcon(null);
+                }
             }
         }));
         return restartBtn;
