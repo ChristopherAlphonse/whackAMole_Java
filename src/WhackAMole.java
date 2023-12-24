@@ -82,56 +82,46 @@ public class WhackAMole {
             });
         }
 
-        setMoleTimer = new Timer(INITIAL_DELAY, new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (currentMoleTile != null) {
-                    currentMoleTile.setIcon(null);
-                    currentMoleTile = null;
-                }
-
-                int num;
-                do {
-                    num = random.nextInt(board.length);
-                } while (currentPlantTile == board[num]);
-
-                currentMoleTile = board[num];
-                currentMoleTile.setIcon(moleIcon);
+        setMoleTimer = new Timer(INITIAL_DELAY, e -> {
+            if (currentMoleTile != null) {
+                currentMoleTile.setIcon(null);
+                currentMoleTile = null;
             }
+
+            int num;
+            do {
+                num = random.nextInt(board.length);
+            } while (currentPlantTile == board[num]);
+
+            currentMoleTile = board[num];
+            currentMoleTile.setIcon(moleIcon);
         });
 
-        setPlantTimer = new Timer(INITIAL_DELAY, new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (currentPlantTile != null) {
-                    currentPlantTile.setIcon(null);
-                    currentPlantTile = null;
-                }
-
-                int num;
-                do {
-                    num = random.nextInt(board.length);
-                } while (currentMoleTile == board[num]);
-
-                currentPlantTile = board[num];
-                currentPlantTile.setIcon(plantIcon);
+        setPlantTimer = new Timer(INITIAL_DELAY, e -> {
+            if (currentPlantTile != null) {
+                currentPlantTile.setIcon(null);
+                currentPlantTile = null;
             }
+
+            int num;
+            do {
+                num = random.nextInt(board.length);
+            } while (currentMoleTile == board[num]);
+
+            currentPlantTile = board[num];
+            currentPlantTile.setIcon(plantIcon);
         });
 
         JButton incrementBtn = new JButton("+500ms");
-        incrementBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                currentDelay = Math.max(500, currentDelay - 500);
-                updateTimersDelay();
-            }
+        incrementBtn.addActionListener(e -> {
+            currentDelay = Math.max(500, currentDelay - 500);
+            updateTimersDelay();
         });
 
         JButton decrementBtn = new JButton("-500ms");
-        decrementBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                currentDelay += 500;
-                updateTimersDelay();
-            }
+        decrementBtn.addActionListener(e -> {
+            currentDelay += 500;
+            updateTimersDelay();
         });
 
         JButton restartBtn = getRestartBtn();
@@ -167,7 +157,7 @@ public class WhackAMole {
 
                 setPlantTimer.start();
                 setMoleTimer.start();
-                new WhackAMole();
+                //
             }
         }));
         return restartBtn;
@@ -197,16 +187,13 @@ public class WhackAMole {
         });
     }
 
-    private JButton getTile(ImageIcon plantIcon) {
+    private JButton getTile(ImageIcon ignoredPlantIcon) {
         JButton tile = new JButton();
 
         tile.setBackground(new Color(255, 255, 255));
         tile.setFocusable(false);
-        tile.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Do something if needed
-            }
+        tile.addActionListener(e -> {
+            // Do something if needed
         });
         tile.addMouseListener(new MouseAdapter() {
             @Override
