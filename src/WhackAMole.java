@@ -17,6 +17,8 @@ public class WhackAMole {
     private final Random random = new Random();
     private final Timer setMoleTimer;
     private final Timer setPlantTimer;
+    private final JLabel textLabel;
+    private int score;
     private int currentDelay = INITIAL_DELAY;
     private JButton currentMoleTile;
     private JButton currentPlantTile;
@@ -43,7 +45,7 @@ public class WhackAMole {
         JPanel boardPanel = new JPanel();
         frame.add(boardPanel);
 
-        JLabel textLabel = new JLabel();
+        textLabel = new JLabel();
         textLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         textLabel.setHorizontalAlignment(JLabel.CENTER);
         textLabel.setText("Score: 0");
@@ -55,10 +57,29 @@ public class WhackAMole {
 
         boardPanel.setLayout(new GridLayout(BOARD_SIZE, BOARD_SIZE));
 
+        score = 0;
         for (int i = 0; i < board.length; i++) {
             JButton tile = getTile(plantIcon);
+
             board[i] = tile;
             boardPanel.add(tile);
+
+            tile.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    JButton title = (JButton) e.getSource();
+                    if (title == currentMoleTile) {
+                        score += 10;
+                        textLabel.setText("Score: " + score);
+                    } else if (title == currentPlantTile) {
+                        setMoleTimer.stop();
+                        setPlantTimer.stop();
+                        textLabel.setText("Game Over: " + score);
+
+
+                    }
+                }
+            });
         }
 
         setMoleTimer = new Timer(INITIAL_DELAY, new ActionListener() {
@@ -115,8 +136,6 @@ public class WhackAMole {
 
         JButton restartBtn = getRestartBtn();
 
-
-//add second args for padding top
         styledBtn(incrementBtn);
         styledBtn(decrementBtn);
         styledBtn(restartBtn);
@@ -126,7 +145,6 @@ public class WhackAMole {
 
         setPlantTimer.start();
         setMoleTimer.start();
-
 
         frame.setVisible(true);
     }
@@ -144,17 +162,16 @@ public class WhackAMole {
                 setPlantTimer.stop();
                 currentMoleTile = null;
                 currentPlantTile = null;
-
-
-//
+                score = 0;
+                textLabel.setText("Score: " + score);
 
                 setPlantTimer.start();
                 setMoleTimer.start();
+                new WhackAMole();
             }
         }));
         return restartBtn;
     }
-
 
     private void updateTimersDelay() {
         setMoleTimer.setDelay(currentDelay);
@@ -165,10 +182,7 @@ public class WhackAMole {
         button.setBackground(new Color(255, 255, 255));
         button.setFocusable(false);
         button.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-
         button.setBorder(BorderFactory.createEmptyBorder(5, 20, 10, 20));
-
-
 
         button.addMouseListener(new MouseAdapter() {
             @Override
@@ -183,7 +197,6 @@ public class WhackAMole {
         });
     }
 
-
     private JButton getTile(ImageIcon plantIcon) {
         JButton tile = new JButton();
 
@@ -192,7 +205,7 @@ public class WhackAMole {
         tile.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Handle button click
+                // Do something if needed
             }
         });
         tile.addMouseListener(new MouseAdapter() {
