@@ -18,7 +18,7 @@ public class WhackAMole {
     private final Timer setMoleTimer;
     private final Timer setPlantTimer;
     private final JLabel textLabel;
-    private boolean gameInProgress = true;
+//    private final boolean gameInProgress = true;
     private int score;
     private int currentDelay = INITIAL_DELAY;
     private JButton currentMoleTile;
@@ -80,7 +80,7 @@ public class WhackAMole {
                           setMoleTimer.stop();
                           setPlantTimer.stop();
                           textLabel.setText("Game Over: " + score);
- gameInProgress = false;
+// gameInProgress = false;
             disableBoard();                         
 
                       }
