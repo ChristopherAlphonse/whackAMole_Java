@@ -26,7 +26,6 @@ public class WhackAMole {
     private final Timer setMoleTimer;
     private final Timer setPlantTimer;
     private final JLabel textLabel;
-    //    private final boolean gameInProgress = true;
     private int score;
     private int currentDelay = INITIAL_DELAY;
     private JButton currentMoleTile;
@@ -95,8 +94,6 @@ public class WhackAMole {
                                            }
 
                                        }
-
-
                                        private void playWinFile() {
 
                                            playFile("C:/Users/chris/Desktop/Github/JavaGame/src/assetsFiles/audio/win.wav");
@@ -113,8 +110,6 @@ public class WhackAMole {
                                            }
                                        }
                                    }
-
-
             );
 
 
@@ -176,6 +171,9 @@ public class WhackAMole {
 
         frame.setVisible(true);
     }
+
+
+
 
 
     private void playFile(String fileName) {
